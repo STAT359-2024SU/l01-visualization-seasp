@@ -67,7 +67,8 @@ There are 3 particularly important components to our template for building a gra
 ::: {.callout-tip icon="false"}
 ## Solution
 
-YOUR SOLUTION HERE
+- A geom is an object that represents the data in a plot, and there are several types (such as bar, line, and point geoms defined by functions such as geom_bar())
+- Aesthetic mapping relates dataset variables to how they are represented visually in the plot, and defined using the aes() function
 
 :::
 
@@ -78,8 +79,15 @@ Construct a scatterplot of `hwy` versus `cty` using the `mpg` dataset. What is t
 ::: {.callout-tip icon="false"}
 ## Solution
 
-YOUR SOLUTION HERE
+```{r}
+ggplot(
+  data = mpg,
+  mapping = aes(x = hwy, y = cty)
+) +
+  geom_point()
+```
 
+A problem with this plot is that it doesn't show any trends based on other factors in the dataset such as drv. Instead, it is just an unlabeled plot of hwy vs cty, with no additional information of what the points themselves represent, and so the interpretation of this visualization is unclear.
 :::
 
 
@@ -93,7 +101,24 @@ Now construct a scatterplot of `hwy` versus `cty`. Set the color of the points t
 ::: {.callout-tip icon="false"}
 ## Solution
 
-YOUR SOLUTION HERE
+3a)
+```{r}
+ggplot(
+  data = mpg,
+  mapping = aes(x = hwy, y = cty, color = drv)
+) +
+  geom_point()
+
+```
+3b)
+```{r}
+ggplot(
+  data = mpg,
+  mapping = aes(x = hwy, y = cty)
+) +
+  geom_point(color = "turquoise") +
+  facet_wrap(~drv)
+```
 
 :::
 
@@ -102,7 +127,7 @@ What are the advantages to using faceting instead of the color aesthetic? What a
 ::: {.callout-tip icon="false"}
 ## Solution
 
-YOUR SOLUTION HERE
+3c) Faceting can be more beneficial in comparison to changing the colour aesthetic in that it allows the data to be separated more clearly into separate subplots and trends within each group may be more visible in that way. However, it also has some disadvantages in that it is less concise and could make it more difficult to compare between the different groups (than if the colour aesthetic is just modified instead). For larger datasets, faceting may become even more beneficial in comparison, so that the trends do not get lost in the higher volume of data points visualized in the scatter plots here.
 
 :::
 
@@ -113,7 +138,37 @@ Construct a scatterplot of `hwy` vs `cty`. Next, map a third numerical variable 
 ::: {.callout-tip icon="false"}
 ## Solution
 
-YOUR SOLUTION HERE
+Mapping third variable to color:
+```{r}
+
+ggplot(
+  data = mpg,
+  mapping = aes(x = hwy, y = cty)
+) +
+  geom_point(aes(color = cyl))
+
+```
+
+Mapping third variable to size:
+
+```{r}
+ggplot(
+  data = mpg,
+  mapping = aes(x = hwy, y = cty)
+) +
+  geom_point(aes(size = cyl))
+```
+
+
+Mapping third variable to shape:
+```{r}
+ggplot(
+  data = mpg,
+  mapping = aes(x = hwy, y = cty)
+) +
+  geom_point(aes(shape = class))
+```
+
 
 :::
 
@@ -122,7 +177,7 @@ How do the aesthetics behave differently for categorical versus numerical variab
 ::: {.callout-tip icon="false"}
 ## Solution
 
-YOUR SOLUTION HERE
+Numerical variables work for color and size, but not for shape, while categorical variables work for color, size, and shape. This makes sense because for shape, there is no quantifiable scale, and so it can't be adjusted continuously along with the numerical variable data.
 
 :::
 
@@ -133,7 +188,18 @@ Construct a histogram of the `carat` variable in the `diamonds` dataset. Adjust 
 ::: {.callout-tip icon="false"}
 ## Solution
 
-YOUR SOLUTION HERE
+```{r}
+ggplot(
+  data = diamonds, 
+  mapping = aes(x = carat)) +
+  geom_histogram(binwidth = 0.25) +
+  labs(
+    title = "Carat Histogram",
+    y = "",
+    caption = "Source: ggplot2 package"
+  )
+```
+
 
 :::
 
@@ -143,8 +209,28 @@ Construct 2 appropriate graphics to show the relationship between `carat` and `c
 
 ::: {.callout-tip icon="false"}
 ## Solution
+6a)
+```{r}
+ggplot(
+  data = diamonds, 
+  mapping = aes(x = cut, y = carat)) +
+  geom_point() +
+  labs(title = "Carat Relationship with Cut Type",
+       x = "Cut Type", y = "Carat")
+```
 
-YOUR SOLUTION HERE
+
+6b)
+```{r}
+ggplot(
+  data = diamonds,
+  mapping = aes(x = cut, y = carat)
+) +
+  geom_boxplot() +
+  labs(title = "Carat Relationship with Cut Type",
+       x = "Cut Type", y = "Carat")
+```
+
 
 :::
 
@@ -156,8 +242,15 @@ Construct a barplot of `cut`. Add in `aes(fill = carat > 0.7)`.
 ::: {.callout-tip icon="false"}
 ## Solution
 
-YOUR SOLUTION HERE
-
+```{r}
+ggplot(
+  data = diamonds, 
+  mapping = aes(x = cut, fill = carat > 0.7)) +
+  geom_bar() +
+  labs(title = "Diamonds Cut Distribution",
+       x = "Cut", y = "Count",
+       fill = "Carat > 0.7 Condition")
+```
 :::
 
 ### Exercise 8
@@ -166,9 +259,7 @@ When would you use `facet_grid()` versus `facet_wrap()`? When using `facet_grid(
 
 ::: {.callout-tip icon="false"}
 ## Solution
-
-YOUR SOLUTION HERE
-
+facet_wrap() seems to be better suited to cases where there is only one variable that determines the faceting, while facet_grid() seems to be better for multiple variable faceting. Placing the more unique level variable in the columns for facet_grid() makes sense because it may be more readable as a visual representation to have the smaller/broader categories on the rows and scrolling through the columns in each row to compare that way.
 :::
 
 
@@ -190,7 +281,23 @@ This dataset was provided by [Swipestats.io](https://www.swipestats.io/).
 ::: {.callout-tip icon="false"}
 ## Solution
 
-YOUR SOLUTION HERE
+```{r}
+ggplot(
+  data = tinder_data, 
+  mapping = aes(x = messages_sent, y = messages_received, color = user_gender)) +
+  geom_point() +
+  geom_abline(slope = 1, intercept = 0, linetype = "dashed") +
+  geom_smooth(method = "lm") + 
+  coord_fixed() +
+  labs(title = "Messages Sent vs Messages Received by Gender",
+       subtitle = "Dashed Line indicates equal amounts of messages sent and receives", 
+       x = "Messages Sent", y = "Messages Received")
+
+dir.create("plots")
+ggsave("plots/tinder_case_study_plot.png")
+```
+
+Based on the distribution of messages sent and received by gender, it appears that women tend to have a higher proportion of messages received compared to the amount they send (a proportion higher than 1, based on the line of best fit), while men tend to have a lower proportion of messages received compared to the amount they send (a proportion lower than 1, based on the line of best fit). The distribution of the variables may impact the conclusions in terms of causing skewing with the averages, but this would be visible in a scatter plot such as the one displayed here, since the full range of the data is shown. From this, outliers can be seen and addressed as well so that they do not disproportionately influence the conclusions. coord_fixed() is helpful for this graphic because it equalizes the scale between the x and y axes, which helps for a comparison where the x and y variables are the same unit and the proportions between the two are being observed. geom(abline) is helpful by providing a center line where the proportion of messages sent and received is 1, so that the trends for both men and women in this study can be compared based on whether they are higher or lower than this reference line.
 
 :::
 
@@ -210,6 +317,14 @@ Why might your graph not match the example exactly? What could we do to ensure o
 ::: {.callout-tip icon="false"}
 ## Solution
 
-YOUR SOLUTION HERE
+```{r}
+ggplot(
+  data = mpg, 
+  mapping = aes(x = hwy, y = class)) +
+  geom_boxplot() +
+  geom_jitter(alpha = 0.25)+
+  labs(y = "Vehicle Class", x = "Highway MPG")
+```
 
+The boxplots part of the graph follows the intended graph closely, but there are some areas of difference (such as the background colour and other formatting aspects that do not match perfectly). To make sure the graphs are identical, I could go through the ggthemes package to ensure that the same formatting tools are used here.
 :::
